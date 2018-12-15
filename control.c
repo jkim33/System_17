@@ -35,6 +35,7 @@ int main(int argc, char* argv[]) {
     data.val = 1;
     semctl(semid, 0, SETVAL, data);
     printf("Shared memory, semaphore, and file were all created!\n");
+    close(fd);
     return 1;
   }
 
@@ -43,10 +44,9 @@ int main(int argc, char* argv[]) {
     semid = semget(ftok("sem",'R'), 1, 0);
     fd = open("story.txt", O_RDONLY);
     struct sembuf operation;
-    operation.sem_num = 0;
     operation.sem_op = -1;
-    semop(semid, &operation, 1);
-    operation.sem_op = 1;
+    operation.sem_flg = SEM_UNDO;
+    operation.sem_num = 0;
     semop(semid, &operation, 1);
     shmctl(shmid, IPC_RMID, 0);
     semctl(semid, 0, IPC_RMID, 0);
@@ -64,6 +64,7 @@ int main(int argc, char* argv[]) {
     char* story = malloc(8192);
     read(fd, story, 8192);
     printf("The Enitre Story: %s\n", story);
+    close(fd);
     return 1;
   }
 

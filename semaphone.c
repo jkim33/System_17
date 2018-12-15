@@ -16,7 +16,8 @@ int main() {
   int semid = semget(ftok("sem",'R'), 1, 0);
   int fd = open("story.txt", O_RDONLY);
   char* line = malloc(256);
-  
+
+  printf("Making sure resources are available\n");
   struct sembuf operation;
   operation.sem_op = -1;
   operation.sem_flg = SEM_UNDO;
